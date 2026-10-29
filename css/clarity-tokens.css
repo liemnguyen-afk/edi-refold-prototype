@@ -1,0 +1,131 @@
+/*
+ * Clarity design tokens (subset used by this prototype).
+ * Values resolved from the Clarity MCP token registry (theme.cui.*) and the
+ * 200-Tokens-DLS-C2L Figma library (Core collection).
+ */
+:root {
+  /* Text */
+  --cui-color-text-t1: #1b1f28;
+  --cui-color-text-t2: #455468;
+  --cui-color-text-t3: #607590;
+  --cui-color-text-t4: #8298af;
+  --cui-color-text-t5: #fcfcfd;
+  --cui-color-text-link: #0059d6;
+  --cui-color-text-critical: #e70848;
+  --cui-color-text-subtle-red: #a80539;
+  --cui-color-text-subtle-brand: #0342b0;
+
+  /* Surfaces */
+  --cui-color-s1-surface-rest: #ffffff;
+  --cui-color-s1-surface-hover: #f5f7fa;
+  --cui-color-s1-surface-active: #ebf0f4;
+  --cui-color-s1-surface-selectedSubtle: #f3f8fe;
+  --cui-color-s1-border-decorative-b2: #e1e8ef;
+  --cui-color-s1-border-rest: rgba(3, 36, 109, 0.5);
+  --cui-color-s3-surface-rest: #f5f7fa;
+  --cui-color-s4-surface-rest: #ebf0f4;
+  --cui-color-neutralSubtle-surface-rest: #ebf0f4;
+  --cui-color-neutralSubtle-surface-hover: #e1e8ef;
+  --cui-color-neutralSubtle-border-rest: #4f6077;
+  --cui-color-redSubtle-surface-rest: #ffe0e7;
+  --cui-color-redSubtle-border-rest: #e70848;
+  --cui-color-primarySubtle-surface-rest: #e0efff;
+  --cui-color-purpleSubtle-border-rest: #6e1be4;
+  --cui-color-primaryMinimal-surface-hover: rgba(159, 205, 254, 0.2);
+  --cui-color-primaryMinimal-surface-active: rgba(159, 205, 254, 0.4);
+  --cui-color-neutralMinimal-surface-hover: rgba(198, 209, 221, 0.2);
+
+  /* Status (chips, alerts) — Core collection, 200-Tokens-DLS-C2L */
+  --cui-color-text-positive: #008570;
+  --cui-color-s2-surface-rest: #fcfcfd;
+  --cui-color-greenSubtle-surface-rest: #d6fff2;
+  --cui-color-greenSubtle-border-rest: #008570;
+  --cui-color-orangeSubtle-surface-rest: #ffe6c7;
+  --cui-color-orangeSubtle-border-rest: #ff9900;
+  --cui-color-lightBlueSubtle-surface-rest: #d9f5ff;
+  --cui-color-lightBlueSubtle-border-rest: #007ac4;
+  --cui-color-yellowSubtle-surface-rest: #fff7d1;
+  --cui-shadow-modalOverlay: rgba(27, 31, 40, 0.5);
+  --cui-radii-xl: 16px;
+  --cui-radii-step: 24px; /* Figma Core radii/2xl (the MCP registry uses 2xl = 100px) */
+
+  /* Primary */
+  --cui-color-primary-surface-rest: #0059d6;
+  --cui-color-primary-surface-hover: #022f88;
+  --cui-color-primary-surface-active: #03246d;
+  --cui-color-primary-border-rest: #3996f9;
+  --cui-color-primary-border-transparent: rgba(57, 150, 249, 0.3);
+  --cui-color-primarySubtle-border-rest: #0971f1;
+
+  /* Bold status surfaces (chips) */
+  --cui-color-primaryBold-surface-rest: #0059d6;
+  --cui-color-neutralBold-surface-rest: #4f6077;
+  --cui-color-greenBold-surface-rest: #00705f;
+  --cui-color-redBold-surface-rest: #ca073e;
+
+  --cui-color-scrollBar-surface-rest: #607590;
+
+  /* Spacing */
+  --cui-space-3xs: 2px;
+  --cui-space-2xs: 4px;
+  --cui-space-xs: 6px;
+  --cui-space-sm: 8px;
+  --cui-space-md: 10px;
+  --cui-space-lg: 12px;
+  --cui-space-xl: 14px;
+  --cui-space-2xl: 16px;
+  --cui-space-3xl: 20px;
+  --cui-space-4xl: 24px;
+  --cui-space-5xl: 32px;
+  --cui-space-6xl: 40px;
+  --cui-space-7xl: 48px;
+
+  /* Radius */
+  --cui-radii-3xs: 2px;
+  --cui-radii-2xs: 4px;
+  --cui-radii-xs: 8px;
+  --cui-radii-sm: 10px;
+  --cui-radii-md: 12px;
+  --cui-radii-2xl: 100px;
+
+  /* Typography */
+  --cui-font-family-heading: "Nunito Sans", sans-serif;
+  --cui-font-family-control: "Nunito Sans", sans-serif;
+  --cui-font-weight-regular: 400;
+  --cui-font-weight-semiBold: 600;
+  --cui-font-weight-bold: 700;
+  --cui-font-size-2xs: 0.75rem;
+  --cui-font-size-xs: 0.8125rem;
+  --cui-font-size-sm: 0.875rem;
+  --cui-font-size-md: 1rem;
+  --cui-font-size-lg: 1.125rem;
+  --cui-font-size-xl: 1.25rem;
+  --cui-font-size-3xl: 1.75rem;
+  --cui-font-lineHeight-3xs: 1rem;
+  --cui-font-lineHeight-2xs: 1.25rem;
+  --cui-font-lineHeight-xs: 1.5rem;
+  --cui-font-lineHeight-md: 2rem;
+  --cui-font-lineHeight-xl: 2.5rem;
+
+  /* Shadows */
+  --cui-shadows-shadow1: 0px 2px 3px 0px #0000001a;
+  --cui-shadows-shadow3: 0px 2px 8px 0px #0000004d;
+  --cui-shadows-shadow4: 0px 20px 30px 0px #0000004d;
+  --cui-shadows-primaryButtonShadow: 0px 0.3px 0.9px 0px #00000063;
+
+  /*
+   * Coupa global header (R43 Supplier 360 component) uses legacy, non-Clarity
+   * colors and Open Sans. No Clarity tokens exist for these, so they are kept
+   * as literals here, scoped to the header only.
+   */
+  --hdr-font: "Open Sans", sans-serif;
+  --hdr-text: #2f2f2f;
+  --hdr-muted: #535f66;
+  --hdr-pill: #eff0f1;
+  --hdr-selected: #268ecd;
+  --hdr-subnav-bg: #f7f7f7;
+  --hdr-subnav-text: #333333;
+  --hdr-subnav-selected: #f27921;
+  --hdr-avatar: #a360ff;
+  --hdr-placeholder: #6a6a6a;
+}

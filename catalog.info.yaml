@@ -1,0 +1,13 @@
+apiVersion: Backstage.io/v1alpha1
+kind: Component
+metadata:
+  description: EDI 855 Order Confirmations via Refold — clickable HTML prototype (Setup entry point, Create Mapping wizard, EDI Mappings list, Test Transformations). Static design prototype, not production code.
+  labels:
+    jiraComponents: UX
+    jiraDevTeam: UX
+    jiraProject: CD
+    sastTool: None
+  name: edi-refold-prototype
+spec:
+  lifecycle: experimental
+  type: website
