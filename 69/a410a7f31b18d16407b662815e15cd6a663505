@@ -1,0 +1,25 @@
+index.html
+  s_10e44d1dff0044::t_9ca11dd49822a4 7-8,12-13
+catalog.info.yaml
+  s_10e44d1dff0044::t_9ca11dd49822a4 4
+js/app.js
+  s_10e44d1dff0044::t_9ca11dd49822a4 400,405,408,431,460,516,672,722
+README.md
+  s_10e44d1dff0044::t_9ca11dd49822a4 20,22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69a410a7f31b18d16407b662815e15cd6a663505",
+  "prompts": {},
+  "sessions": {
+    "s_10e44d1dff0044": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da6c5ff-7918-4f9c-a498-1ee1992a3ecd",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "liemnguyen-afk <301846626+liemnguyen-afk@users.noreply.github.com>"
+    }
+  }
+}
