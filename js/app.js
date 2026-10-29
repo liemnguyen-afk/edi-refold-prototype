@@ -89,7 +89,7 @@ function shell(active, body) {
   return `<div class="shell">
     ${topbar('EDI Integration')}
     <aside class="sidenav"><nav aria-label="EDI Integration">
-      ${item('mappings', 'mappings', I.mapping(20), 'EDI Mappings')}
+      ${item('mappings', 'mappings', I.mapping(20), 'EDI Transformations')}
       ${item('tests', 'tests', I.clipboard(20), 'Transformation Runs')}
     </nav></aside>
     <main class="main">${body}</main>
@@ -138,8 +138,8 @@ function filterPopover(open, act, values, selected) {
 function viewSetup() {
   const nav = ['Travel & Expenses', 'Requests', 'Orders', 'Invoices', 'Community', 'Inventory', 'Sourcing', 'Suppliers', 'Items', 'Reports', 'Quality', 'Setup'];
   const sub = ['All Setup Items', 'Company Info', 'Accounts', 'Users', 'Approvals', 'Budget Periods', 'Budget Lines'];
-  const box = ([title, links]) => `<section class="box"><h2>${esc(title)}</h2><ul>${links.map(l => l === 'EDI Mappings'
-    ? `<li><a href="#/mappings" class="target">EDI Mappings</a></li>`
+  const box = ([title, links]) => `<section class="box"><h2>${esc(title)}</h2><ul>${links.map(l => l === 'EDI Transformations'
+    ? `<li><a href="#/mappings" class="target">EDI Transformations</a></li>`
     : `<li><a href="#" data-stub>${esc(l)}</a></li>`).join('')}</ul></section>`;
   return `<div class="classic-page">
     <header class="gh">
@@ -203,7 +203,7 @@ function viewMappings() {
     return shell('mappings', `<div class="content">
       ${toastHtml()}
       <div>
-        <h1 class="page-title">EDI Mappings</h1>
+        <h1 class="page-title">EDI Transformations</h1>
         <p class="page-desc">Mappings that transform supplier EDI 855 files into Coupa order confirmations.</p>
       </div>
       ${docType.replace('width:300px', 'width:420px').replace('EDI 855 — PO Acknowledgment', 'EDI 855 — Purchase Order Acknowledgment')}
@@ -239,7 +239,7 @@ function viewMappings() {
     ${toastHtml()}
     <div class="header-row">
       <div>
-        <h1 class="page-title">EDI Mappings</h1>
+        <h1 class="page-title">EDI Transformations</h1>
         <p class="page-desc">All supplier mapping policies for the selected EDI document type.</p>
       </div>
       ${docType}
@@ -513,7 +513,7 @@ function render() {
   const view = { setup: viewSetup, mappings: viewMappings, 'create/details': viewDetails, 'create/connecting': viewConnecting,
     'create/fields': viewFields, 'create/tested': viewTested, tests: viewTests }[r];
   $app.innerHTML = view() + modalHtml();
-  document.title = { setup: 'Setup', mappings: 'EDI Mappings', tests: 'Test Transformations' }[r] || (S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
+  document.title = { setup: 'Setup', mappings: 'EDI Transformations', tests: 'Test Transformations' }[r] || (S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
   document.title += ' · Coupa';
 
   if (focusId) {
@@ -715,8 +715,8 @@ document.addEventListener('keydown', e => {
 
 /* ---------------------------------------------------------------- Prototype navigator (reviewer tool, not product UI) */
 const PROTO = [
-  ['Entry point', [['setup', 'A0 · Setup › Integrations › EDI Mappings']]],
-  ['EDI Mappings', [['zero', 'A1 · EDI Mappings — zero state'], ['list', 'A5 · EDI Mappings — list (sample data)']]],
+  ['Entry point', [['setup', 'A0 · Setup › Integrations › EDI Transformations']]],
+  ['EDI Transformations', [['zero', 'A1 · EDI Transformations — zero state'], ['list', 'A5 · EDI Transformations — list (sample data)']]],
   ['Create Mapping', [['details', 'Details and Upload — empty'], ['details-filled', 'Details and Upload — filled'], ['connecting', 'Mapping — parsing the EDI file'],
     ['fields', 'Field Mappings'], ['errors', 'Tested Mappings — errors found'], ['success', 'Tested Mappings — succeeded']]],
   ['Test Transformations', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
