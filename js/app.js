@@ -90,7 +90,7 @@ function shell(active, body) {
     ${topbar('EDI Integration')}
     <aside class="sidenav"><nav aria-label="EDI Integration">
       ${item('mappings', 'mappings', I.mapping(20), 'EDI Mappings')}
-      ${item('tests', 'tests', I.clipboard(20), 'Test Transformations')}
+      ${item('tests', 'tests', I.clipboard(20), 'Transformation Runs')}
     </nav></aside>
     <main class="main">${body}</main>
   </div>`;
@@ -282,8 +282,7 @@ function viewDetails() {
           ${I.upload(32)}
           <div class="t">Upload EDI file</div>
           <div class="c">.edi, .x12 or .txt · max 10 MB</div>
-          <button type="button" class="btn btn-primary" id="upload-btn" data-act="pick-file">Upload File</button>
-          <a href="#" class="sample" data-act="sample-file">or use a sample file (acme_po_4471_855.edi)</a>
+          <button type="button" class="btn btn-primary" id="upload-btn" data-act="pick-file">Browse</button>
         </div>
         ${w.fileError ? `<span class="help error" id="file-err">Upload an EDI file to create the mapping.</span>` : ''}
         <input type="file" id="file-input" accept=".edi,.x12,.txt" hidden></div>`;
@@ -482,7 +481,7 @@ function modalHtml() {
          ${m.file
            ? `<div class="file-item"><span class="thumb">${I.file(22)}</span><div class="grow"><div class="name">${esc(m.file.name)}</div><div class="meta">Uploaded · ${m.file.segments} segments detected</div></div>${iconBtn('test-remove-file', I.trash(20), 'Remove file')}</div>`
            : `<div class="dropzone ${U.drag ? 'drag' : ''}" data-dropzone="test">${I.upload(28)}<div class="t">Upload EDI file</div><div class="c">.edi, .x12 or .txt · max 10 MB</div>
-              <button type="button" class="btn btn-primary btn-sm" data-act="pick-file">Upload File</button><a href="#" class="sample" data-act="test-sample-file">or use a sample file</a></div>
+              <button type="button" class="btn btn-primary btn-sm" data-act="pick-file">Browse</button></div>
               <input type="file" id="file-input" accept=".edi,.x12,.txt" hidden>`}
          <div class="field"><label for="t-policy">Mapping policy</label><select id="t-policy" class="select">${policies.map(p => `<option value="${p.id}" ${p.id === m.policyId ? 'selected' : ''}>${p.id} · ${esc(p.name)} (${p.status})</option>`).join('')}</select></div>`
       : `<p>Create a mapping before running a test.</p>`,
@@ -721,6 +720,7 @@ const PROTO = [
   ['Create Mapping', [['details', 'Details and Upload — empty'], ['details-filled', 'Details and Upload — filled'], ['connecting', 'Mapping — parsing the EDI file'],
     ['fields', 'Field Mappings'], ['errors', 'Tested Mappings — errors found'], ['success', 'Tested Mappings — succeeded']]],
   ['Test Transformations', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
+  ['Helpers', [['attach', 'Attach sample EDI file (acme_po_4471_855.edi)']]],
 ];
 function protoGo(key) {
   const filled = () => ({ ...freshWizard(), name: 'Supplier Integration', suppliers: ['SUP-100482', 'SUP-100915'], file: sampleFile() });
@@ -738,6 +738,10 @@ function protoGo(key) {
       save(); go('create/tested'); break;
     }
     case 'tests-zero': S.tests = []; save(); go('tests'); break;
+    case 'attach': // reviewer shortcut for the upload areas (no real file needed)
+      if (U.modal?.type === 'new-test') { U.modal.file = sampleFile(); render(); break; }
+      if (route() !== 'create/details') { S.wizard = { ...freshWizard(), ...S.wizard, file: null }; save(); go('create/details'); }
+      S.wizard.file = sampleFile(); S.wizard.fileError = false; save(); render(); break;
     case 'tests': if (!S.tests.length) S.tests = clone(SEED_TESTS); if (!S.mappings.length) S.mappings = clone(SEED_MAPPINGS); save(); go('tests'); break;
   }
 }
@@ -760,7 +764,7 @@ function renderProtoNav(r) {
   </div>`);
   root = document.querySelector('.proto-nav');
   root.querySelector('.proto-toggle').addEventListener('click', ev => { ev.stopPropagation(); root.classList.toggle('open'); });
-  root.querySelectorAll('[data-proto]').forEach(a => a.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); root.classList.remove('open'); U.modal = null; protoGo(a.dataset.proto); }));
+  root.querySelectorAll('[data-proto]').forEach(a => a.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); root.classList.remove('open'); if (a.dataset.proto !== 'attach') U.modal = null; protoGo(a.dataset.proto); }));
   root.querySelectorAll('[data-proto-tb]').forEach(x => x.addEventListener('change', () => { S.testBehavior = x.value; S.wizard.testAttempts = 0; save(); }));
   root.querySelector('[data-proto-reset]').addEventListener('click', () => { localStorage.removeItem(STORE_KEY); location.hash = '#/setup'; location.reload(); });
 }
