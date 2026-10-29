@@ -397,15 +397,15 @@ function viewTested() {
     </div>`);
 }
 
-/* ---------------------------------------------------------------- B2 · Test Transformations */
+/* ---------------------------------------------------------------- B2 · Transformation Runs */
 function viewTests() {
   if (!S.tests.length) {
     return shell('tests', `<div class="content">
       ${toastHtml()}
-      <div><h1 class="page-title">Test Transformations</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
+      <div><h1 class="page-title">Transformation Runs</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
       <section class="card empty">
         ${I.fileAdd(48)}
-        <h3>No test transformations yet</h3>
+        <h3>No transformation runs yet</h3>
         ${S.mappings.length
           ? `<p>To begin, click on “New test” to perform test mappings for your Suppliers</p>
         <button class="btn btn-primary btn-lg" data-act="new-test">${I.plusCircle(20)} New Test</button>`
@@ -428,7 +428,7 @@ function viewTests() {
     </tr>`).join('') : `<tr class="empty-row"><td colspan="7">No test runs match your search or filters.</td></tr>`;
   return shell('tests', `<div class="content">
     ${toastHtml()}
-    <div><h1 class="page-title">Test Transformations</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
+    <div><h1 class="page-title">Transformation Runs</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
     <div class="toolbar">
       <button class="btn btn-outline" data-act="new-test">${I.plusCircle(20)} New test</button>
       <label class="search"><span class="sr-only">Search test runs</span>${I.search(20)}<input id="test-search" class="input" placeholder="Search" value="${esc(U.testSearch)}" data-input="testSearch"></label>
@@ -457,7 +457,7 @@ function modalHtml() {
   if (m.type === 'delete-mapping') {
     const map = S.mappings.find(x => x.id === m.id);
     return frame(`Delete “${esc(map.name)}”?`,
-      `<p>This removes ${map.id} from Refold. It can’t be undone. Past test runs stay in Test Transformations.</p>
+      `<p>This removes ${map.id} from Refold. It can’t be undone. Past test runs stay in Transformation Runs.</p>
        ${map.status === 'Active' ? `<div class="alert critical">${I.alert(20)}<div><div class="a-title">This mapping is active</div><div class="a-desc">New EDI 855 files from ${esc(map.supplier)} will fail with “No active mapping” until another mapping is activated.</div></div></div>` : ''}`,
       `<button class="btn btn-outline" data-act="close-modal">Cancel</button><button class="btn btn-critical" data-act="confirm-delete" data-id="${map.id}">Delete mapping</button>`);
   }
@@ -513,7 +513,7 @@ function render() {
   const view = { setup: viewSetup, mappings: viewMappings, 'create/details': viewDetails, 'create/connecting': viewConnecting,
     'create/fields': viewFields, 'create/tested': viewTested, tests: viewTests }[r];
   $app.innerHTML = view() + modalHtml();
-  document.title = { setup: 'Setup', mappings: 'EDI Transformations', tests: 'Test Transformations' }[r] || (S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
+  document.title = { setup: 'Setup', mappings: 'EDI Transformations', tests: 'Transformation Runs' }[r] || (S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
   document.title += ' · Coupa';
 
   if (focusId) {
@@ -669,7 +669,7 @@ document.addEventListener('click', e => {
     case 'save-activate': persistMapping('Active'); return;
     case 'download-csv': downloadCsv(id); return;
 
-    // Test Transformations
+    // Transformation Runs
     case 'new-test': U.modal = { type: 'new-test', policyId: S.mappings[0]?.id, file: null }; break;
     case 'test-sample-file': U.modal.file = sampleFile(); break;
     case 'test-remove-file': U.modal.file = null; break;
@@ -719,7 +719,7 @@ const PROTO = [
   ['EDI Transformations', [['zero', 'A1 · EDI Transformations — zero state'], ['list', 'A5 · EDI Transformations — list (sample data)']]],
   ['Create Mapping', [['details', 'Details and Upload — empty'], ['details-filled', 'Details and Upload — filled'], ['connecting', 'Mapping — parsing the EDI file'],
     ['fields', 'Field Mappings'], ['errors', 'Tested Mappings — errors found'], ['success', 'Tested Mappings — succeeded']]],
-  ['Test Transformations', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
+  ['Transformation Runs', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
   ['Helpers', [['attach', 'Attach sample EDI file (acme_po_4471_855.edi)']]],
 ];
 function protoGo(key) {
