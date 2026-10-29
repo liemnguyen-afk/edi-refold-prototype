@@ -206,11 +206,11 @@ function viewMappings() {
         <h1 class="page-title">EDI Mappings</h1>
         <p class="page-desc">Mappings that transform supplier EDI 855 files into Coupa order confirmations.</p>
       </div>
-      ${docType.replace('width:300px', 'width:420px')}
+      ${docType.replace('width:300px', 'width:420px').replace('EDI 855 — PO Acknowledgment', 'EDI 855 — Purchase Order Acknowledgment')}
       <section class="card empty">
         ${I.fileAdd(48)}
         <h3>No EDI 855 mappings yet</h3>
-        <p>To begin, click on “Create Mapping Policy” to create mapping for your Suppliers</p>
+        <p>To begin, click ‘Create Mapping Policy’ to create mapping for your EDI file sample.</p>
         <button class="btn btn-primary" data-act="create">${I.plusCircle(20)} Create mapping</button>
       </section>
     </div>`);
@@ -300,7 +300,7 @@ function viewDetails() {
         <span class="label" id="sup-label">Supplier</span>
         <div class="ms-anchor">
         <div class="ms-control ${U.msOpen ? 'open' : ''}" data-act="toggle-ms" role="combobox" aria-expanded="${U.msOpen}" aria-labelledby="sup-label" tabindex="0">
-          ${chosen.length ? chosen.map(s => `<span class="chip lg">${esc(s.name)} • ${s.id}<button type="button" class="x" data-act="remove-supplier" data-id="${s.id}" aria-label="Remove ${esc(s.name)}">${I.close(12)}</button></span>`).join('') : '<span class="placeholder">Any</span>'}
+          ${chosen.length ? chosen.map(s => `<span class="chip lg">${esc(s.name)} • ${s.id}<button type="button" class="x" data-act="remove-supplier" data-id="${s.id}" aria-label="Remove ${esc(s.name)}">${I.close(12)}</button></span>`).join('') : `<span class="placeholder ${U.msOpen ? 'searching' : ''}">${U.msOpen ? 'Search Suppliers' : 'Any'}</span>`}
           <span class="caret">${I.caret(18)}</span>
         </div>
         ${U.msOpen ? `<div class="ms-pop" data-pop>
@@ -309,7 +309,6 @@ function viewDetails() {
             ${opts.length ? opts.map(s => `<label class="ms-item"><input type="checkbox" data-act="pick-supplier" value="${s.id}" ${w.suppliers.includes(s.id) ? 'checked' : ''}> ${esc(s.name)} • ${s.id}</label>`).join('') : `<div class="ms-empty">No suppliers found</div>`}
           </div></div>` : ''}
         </div>
-        <span class="help">Leave as “Any” to apply this mapping to every supplier without a specific mapping.</span>
       </div>
       ${upload}
       <div class="field">
@@ -326,8 +325,7 @@ function viewDetails() {
 function viewConnecting() {
   return wizardShell(1, `<section class="card connecting" role="status">
       <div class="spinner"></div>
-      <b>Connecting to the mapping workspace…</b>
-      <p>Securely signing you in (READY → token → INIT).<br>This usually takes a few seconds.</p>
+      <b>Parsing the EDI file...</b>
     </section>`);
 }
 
@@ -339,7 +337,7 @@ function viewFields() {
   const w = S.wizard;
   const count = 67 + w.fields.length;
   const rows = w.fields.map((f, i) => `<tr>
-      <td class="tf"><b>${esc(f.target)}</b><small>OPTIONAL · STANDARD</small></td>
+      <td class="tf"><b>${esc(f.target)}</b><small>Optional-Standard</small></td>
       <td>${f.source ? esc(f.source) : '—'}</td>
       <td>${chip(f.type)}</td>
       <td>${chip(f.transform)}</td>
@@ -720,12 +718,12 @@ document.addEventListener('keydown', e => {
 const PROTO = [
   ['Entry point', [['setup', 'A0 · Setup › Integrations › EDI Mappings']]],
   ['EDI Mappings', [['zero', 'A1 · EDI Mappings — zero state'], ['list', 'A5 · EDI Mappings — list (sample data)']]],
-  ['Create Mapping', [['details', 'Details and Upload — empty'], ['details-filled', 'Details and Upload — filled'], ['connecting', 'Mapping — connecting to Refold'],
+  ['Create Mapping', [['details', 'Details and Upload — empty'], ['details-filled', 'Details and Upload — filled'], ['connecting', 'Mapping — parsing the EDI file'],
     ['fields', 'Field Mappings'], ['errors', 'Tested Mappings — errors found'], ['success', 'Tested Mappings — succeeded']]],
   ['Test Transformations', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
 ];
 function protoGo(key) {
-  const filled = () => ({ ...freshWizard(), name: 'Acme Supplier EMEA', suppliers: ['SUP-100482', 'SUP-100915'], file: sampleFile() });
+  const filled = () => ({ ...freshWizard(), name: 'Supplier Integration', suppliers: ['SUP-100482', 'SUP-100915'], file: sampleFile() });
   switch (key) {
     case 'setup': go('setup'); break;
     case 'zero': S.mappings = []; save(); go('mappings'); break;

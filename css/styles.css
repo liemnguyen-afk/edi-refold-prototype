@@ -104,6 +104,7 @@ h1, h2, h3, p { margin: 0; }
 .ms-anchor { position: relative; }
 .ms-control { min-height: 40px; display: flex; align-items: center; gap: var(--cui-space-sm); flex-wrap: wrap; padding: var(--cui-space-2xs) 40px var(--cui-space-2xs) var(--cui-space-lg); border-radius: var(--cui-radii-xs); border: 1px solid var(--cui-color-s1-border-decorative-b2); background: var(--cui-color-s1-surface-rest); cursor: pointer; position: relative; }
 .ms-control .placeholder { color: var(--cui-color-text-t1); }
+.ms-control .placeholder.searching { color: var(--cui-color-text-t3); }
 .ms-control .caret { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
 .ms-pop { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 20; background: var(--cui-color-s1-surface-rest); border-radius: var(--cui-radii-xs); box-shadow: var(--cui-shadows-shadow3); padding: var(--cui-space-sm); }
 .ms-pop .search .input { height: 36px; border-radius: var(--cui-radii-2xl); }
