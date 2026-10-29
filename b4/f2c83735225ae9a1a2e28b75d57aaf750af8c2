@@ -1,0 +1,45 @@
+.gitignore
+  s_10e44d1dff0044::t_5e0d5613ee8b06 1
+README.md
+  s_10e44d1dff0044::t_692bd30927f0bd 1-44
+assets/ai-sparkle.svg
+  s_10e44d1dff0044::t_2cd0e0b9c55cde 1-23
+assets/bell.svg
+  s_10e44d1dff0044::t_5e64d7034fbdfe 1-6
+assets/cart.svg
+  s_10e44d1dff0044::t_9442931d9478ff 1-10
+assets/coupa-logo-blue.svg
+  s_10e44d1dff0044::t_9c8ff19f33da5e 1-10
+assets/home.svg
+  s_10e44d1dff0044::t_644e033d509c50 1-5
+assets/magnifying-glass.svg
+  s_10e44d1dff0044::t_5a95d00eb1786a 1-3
+css/clarity-tokens.css
+  s_10e44d1dff0044::t_59649fb2c6ae30 1-131
+css/styles.css
+  s_10e44d1dff0044::t_6ea0b1f8cd6c5c 1-285
+index.html
+  s_10e44d1dff0044::t_002af3f78d68b2 1-15
+js/app.js
+  s_10e44d1dff0044::t_3ba36e0a261506 1-771
+js/data.js
+  s_10e44d1dff0044::t_f2de6a0b8b0445 1-68
+catalog.info.yaml
+  s_10e44d1dff0044::t_dbf094f890ca97 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b4f2c83735225ae9a1a2e28b75d57aaf750af8c2",
+  "prompts": {},
+  "sessions": {
+    "s_10e44d1dff0044": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da6c5ff-7918-4f9c-a498-1ee1992a3ecd",
+        "model": "unknown"
+      },
+      "human_author": "liemnguyen-afk <301846626+liemnguyen-afk@users.noreply.github.com>"
+    }
+  }
+}
