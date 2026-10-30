@@ -176,7 +176,7 @@ table.grid tr.group .g .btn-text { margin-left: auto; font-size: var(--cui-font-
 table.fields tbody tr:not(.group):nth-child(even) td { background: var(--cui-color-s3-surface-rest); }
 table.fields tbody tr:not(.group):nth-child(odd) td { background: var(--cui-color-s1-surface-rest); }
 table.fields .tf b { display: block; font-weight: var(--cui-font-weight-bold); }
-table.fields .tf small { font-size: var(--cui-font-size-xs); color: var(--cui-color-text-t1); letter-spacing: .02em; }
+table.fields .tf small { font-size: var(--cui-font-size-xs); color: var(--cui-color-text-t3); letter-spacing: .02em; }
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--cui-font-size-xs); }
 
 .pagination { display: flex; justify-content: center; align-items: center; gap: var(--cui-space-lg); color: var(--cui-color-text-t2); margin-top: calc(-1 * var(--cui-space-sm)); }
