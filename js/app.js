@@ -55,7 +55,7 @@ const iconBtn = (act, icon, tip, data = '', cls = '') => `<button type="button" 
 function topbar(title, draftLink = false) {
   return `<header class="topbar">
     <img class="logo" src="assets/coupa-logo-blue.svg" alt="Coupa">
-    <span class="title">${esc(title)}</span>
+    ${title ? `<span class="title">${esc(title)}</span>` : ''}
     ${draftLink ? `<button class="btn btn-text topbar-draft" data-act="save-draft">Save as Draft</button>` : ''}
     <button class="close ${draftLink ? 'after-draft' : ''}" data-act="close-shell" aria-label="Close">${I.close(22)}</button>
   </header>`;
@@ -64,7 +64,7 @@ function topbar(title, draftLink = false) {
 function shell(active, body) {
   const item = (key, href, icon, label) => `<a href="#/${href}" class="${active === key ? 'active' : ''}" ${active === key ? 'aria-current="page"' : ''}>${icon}${label}</a>`;
   return `<div class="shell">
-    ${topbar('EDI Integration')}
+    ${topbar('')}
     <aside class="sidenav"><nav aria-label="EDI Integration">
       ${item('mappings', 'mappings', I.mapping(20), 'EDI Transformations')}
       ${item('tests', 'tests', I.clipboard(20), 'Transformation Runs')}
