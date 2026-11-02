@@ -1,0 +1,23 @@
+css/styles.css
+  s_10e44d1dff0044::t_21a2fccb3018ce 181
+index.html
+  s_10e44d1dff0044::t_1634eb5ff0e57b 7-8,12-13
+js/app.js
+  s_10e44d1dff0044::t_fb42fc93ddb88e 343-345
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a7a479971af9905b09d1938222b204bb1d02dce9",
+  "prompts": {},
+  "sessions": {
+    "s_10e44d1dff0044": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da6c5ff-7918-4f9c-a498-1ee1992a3ecd",
+        "model": "unknown"
+      },
+      "human_author": "liemnguyen-afk <301846626+liemnguyen-afk@users.noreply.github.com>"
+    }
+  }
+}
