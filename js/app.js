@@ -6,38 +6,13 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const clone = o => JSON.parse(JSON.stringify(o));
 const $app = document.getElementById('app');
 
-/* ---------------------------------------------------------------- Icons (Clarity 201-Icons, outline set) */
-const svg = (d, s = 20, extra = '') => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${d}</svg>`;
-const I = {
-  close: s => svg('<path d="M6 6l12 12M18 6L6 18"/>', s),
-  plusCircle: s => svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>', s),
-  plus: s => svg('<path d="M12 5v14M5 12h14"/>', s),
-  search: s => svg('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>', s),
-  filter: s => svg('<path d="M4 7h16M7 12h10M10 17h4"/>', s),
-  caret: s => svg('<path d="M7 10l5 5 5-5"/>', s),
-  edit: s => svg('<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>', s),
-  trash: s => svg('<path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13M10 11v6M14 11v6"/>', s),
-  // Test Mapping action — Clarity flask icon exported from Figma 2082:26467 (28px button, 14px glyph)
-  flask: s => `<svg width="${s}" height="${s}" viewBox="4 4 20 20" fill="currentColor" aria-hidden="true"><path d="M9.33338 19.6666C8.90816 19.6666 8.60593 19.4769 8.42671 19.0974C8.24738 18.7179 8.29066 18.3649 8.55654 18.0384L12.3334 13.4486V9.33325H11.5385C11.3969 9.33325 11.2781 9.28531 11.1822 9.18942C11.0864 9.09353 11.0385 8.97475 11.0385 8.83309C11.0385 8.69131 11.0864 8.57259 11.1822 8.47692C11.2781 8.38114 11.3969 8.33325 11.5385 8.33325H16.4615C16.6032 8.33325 16.722 8.3812 16.8179 8.47709C16.9137 8.57297 16.9615 8.69175 16.9615 8.83342C16.9615 8.9752 16.9137 9.09392 16.8179 9.18959C16.722 9.28536 16.6032 9.33325 16.4615 9.33325H15.6667V13.4486L19.4435 18.0384C19.7094 18.3649 19.7527 18.7179 19.5734 19.0974C19.3942 19.4769 19.0919 19.6666 18.6667 19.6666H9.33338ZM9.33338 18.6666H18.6667L14.6667 13.7999V9.33325H13.3334V13.7999L9.33338 18.6666Z"/></svg>`,
-  toggleOn: s => svg('<rect x="2.5" y="7" width="19" height="10" rx="5" fill="currentColor"/><circle cx="16.5" cy="12" r="3" fill="#fff" stroke="none"/>', s),
-  toggleOff: s => svg('<rect x="2.5" y="7" width="19" height="10" rx="5"/><circle cx="7.5" cy="12" r="2.5"/>', s),
-  flag: s => svg('<path d="M6 21V4M6 4h11l-2 4 2 4H6"/>', s),
-  eye: s => svg('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>', s),
-  download: s => svg('<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/>', s),
-  upload: s => svg('<path d="M12 16V4M7.5 8.5L12 4l4.5 4.5M5 19h14"/>', s),
-  fileAdd: s => svg('<path d="M14 3H6.5A1.5 1.5 0 005 4.5v15A1.5 1.5 0 006.5 21h11a1.5 1.5 0 001.5-1.5V8z"/><path d="M14 3v5h5M12 11v6M9 14h6"/>', s),
-  file: s => svg('<path d="M14 3H6.5A1.5 1.5 0 005 4.5v15A1.5 1.5 0 006.5 21h11a1.5 1.5 0 001.5-1.5V8z"/><path d="M14 3v5h5M8.5 13h7M8.5 16.5h5"/>', s),
-  check: s => svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', s, 'stroke-width="2.4"'),
-  checkCircle: s => svg('<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 9.8"/>', s),
-  alert: s => svg('<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/>', s),
-  database: s => svg('<ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/>', s),
-  mapping: s => svg('<rect x="2.5" y="7" width="19" height="10" rx="5"/><circle cx="16.5" cy="12" r="2.5" fill="currentColor"/>', s),
-  clipboard: s => svg('<rect x="5" y="4.5" width="14" height="16" rx="1.5"/><path d="M9 4.5V3h6v1.5M8.5 13l2.5 2.5 4.5-5"/>', s),
-  first: s => svg('<path d="M7 6v12M17 6l-6 6 6 6"/>', s),
-  prev: s => svg('<path d="M15 6l-6 6 6 6"/>', s),
-  next: s => svg('<path d="M9 6l6 6-6 6"/>', s),
-  last: s => svg('<path d="M17 6v12M7 6l6 6-6 6"/>', s),
-};
+/* ---------------------------------------------------------------- Icons
+   Clarity 2 icon set (201-Icons-DLS-C2L) — paths in js/icons.js, exported from the Figma library. */
+const clarityIcon = name => (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${CLARITY_ICON_PATHS[name]}"/></svg>`;
+const I = Object.fromEntries(Object.keys(CLARITY_ICON_PATHS).map(k => [k, clarityIcon(k)]));
+I.mapping = I.toggleOff; // left-nav icon for EDI Transformations (switch-field-outline, as in Figma)
+// Test Mapping action — Clarity flask icon exported from Figma 2082:26467 (28px button, 14px glyph)
+I.flask = s => `<svg width="${s}" height="${s}" viewBox="4 4 20 20" fill="currentColor" aria-hidden="true"><path d="M9.33338 19.6666C8.90816 19.6666 8.60593 19.4769 8.42671 19.0974C8.24738 18.7179 8.29066 18.3649 8.55654 18.0384L12.3334 13.4486V9.33325H11.5385C11.3969 9.33325 11.2781 9.28531 11.1822 9.18942C11.0864 9.09353 11.0385 8.97475 11.0385 8.83309C11.0385 8.69131 11.0864 8.57259 11.1822 8.47692C11.2781 8.38114 11.3969 8.33325 11.5385 8.33325H16.4615C16.6032 8.33325 16.722 8.3812 16.8179 8.47709C16.9137 8.57297 16.9615 8.69175 16.9615 8.83342C16.9615 8.9752 16.9137 9.09392 16.8179 9.18959C16.722 9.28536 16.6032 9.33325 16.4615 9.33325H15.6667V13.4486L19.4435 18.0384C19.7094 18.3649 19.7527 18.7179 19.5734 19.0974C19.3942 19.4769 19.0919 19.6666 18.6667 19.6666H9.33338ZM9.33338 18.6666H18.6667L14.6667 13.7999V9.33325H13.3334V13.7999L9.33338 18.6666Z"/></svg>`;
 
 /* ---------------------------------------------------------------- State
  * Persisted under localStorage "edi.*" so a reviewer can reload mid-flow. */
@@ -229,11 +204,11 @@ function viewMappings() {
       <td>${esc(m.created)}</td>
       <td>${chip(m.status)}</td>
       <td><div class="actions">
-        ${iconBtn('edit-mapping', I.edit(18), 'Edit Mapping', `data-id="${m.id}"`)}
+        ${iconBtn('edit-mapping', I.edit(20), 'Edit Mapping', `data-id="${m.id}"`)}
         ${m.status === 'Active'
           ? iconBtn('toggle-mapping', I.toggleOn(20), 'Active Mapping', `data-id="${m.id}"`)
           : iconBtn('toggle-mapping', I.toggleOff(20), 'Inactive Mapping', `data-id="${m.id}"`)}
-        ${iconBtn('delete-mapping', I.trash(18), 'Delete Mapping', `data-id="${m.id}"`)}
+        ${iconBtn('delete-mapping', I.trash(20), 'Delete Mapping', `data-id="${m.id}"`)}
         ${iconBtn('test-mapping', I.flask(20), 'Test Mapping', `data-id="${m.id}"`)}
       </div></td>
     </tr>`).join('') : `<tr class="empty-row"><td colspan="6">No mappings match your search or filters.</td></tr>`;

@@ -38,6 +38,7 @@ The **Prototype ▾** button (bottom left) is a reviewer tool, not product UI:
 | `css/clarity-tokens.css` | Clarity tokens (Clarity MCP registry + 200-Tokens-DLS-C2L Core collection) |
 | `css/styles.css` | Styles; every colour, spacing and radius uses a token. The classic Setup page and Coupa global header keep their legacy literals, scoped to `.classic` / `--hdr-*`. |
 | `js/data.js` | Sample suppliers, mappings, test runs, field mappings, Setup links |
+| `js/icons.js` | Clarity 2 icons (201-Icons-DLS-C2L) exported from the Figma library as SVG paths |
 | `js/app.js` | Router, state, views and actions |
 
 ## Not built
