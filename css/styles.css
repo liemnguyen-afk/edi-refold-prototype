@@ -28,6 +28,8 @@ h1, h2, h3, p { margin: 0; }
 .topbar { grid-column: 1 / -1; display: flex; align-items: center; padding: 0 var(--cui-space-4xl) 0 var(--cui-space-3xl); }
 .topbar .logo { width: 122px; height: 33px; }
 .topbar .title { margin-left: 138px; font-family: var(--cui-font-family-heading); font-size: var(--cui-font-size-xl); line-height: var(--cui-font-lineHeight-md); font-weight: var(--cui-font-weight-semiBold); color: var(--cui-color-text-t2); }
+.topbar .topbar-draft { margin-left: auto; margin-right: var(--cui-space-sm); font-size: var(--cui-font-size-md); font-weight: var(--cui-font-weight-regular); }
+.topbar .close.after-draft { margin-left: 0; }
 .topbar .close { margin-left: auto; width: 36px; height: 36px; display: grid; place-items: center; border-radius: var(--cui-radii-2xl); color: var(--cui-color-text-t1); }
 .topbar .close:hover { background: var(--cui-color-neutralMinimal-surface-hover); }
 

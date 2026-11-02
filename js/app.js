@@ -76,11 +76,12 @@ const CHIP_KIND = { Active: 'positive', Inactive: 'warning', Draft: '', Succeede
 const chip = (label, kind = CHIP_KIND[label] ?? '') => `<span class="chip ${kind}">${esc(label)}</span>`;
 const iconBtn = (act, icon, tip, data = '', cls = '') => `<button type="button" class="icon-btn ${cls}" data-act="${act}" ${data} data-tip="${esc(tip)}" aria-label="${esc(tip)}">${icon}</button>`;
 
-function topbar(title) {
+function topbar(title, draftLink = false) {
   return `<header class="topbar">
     <img class="logo" src="assets/coupa-logo-blue.svg" alt="Coupa">
     <span class="title">${esc(title)}</span>
-    <button class="close" data-act="close-shell" aria-label="Close">${I.close(22)}</button>
+    ${draftLink ? `<button class="btn btn-text topbar-draft" data-act="save-draft">Save as Draft</button>` : ''}
+    <button class="close ${draftLink ? 'after-draft' : ''}" data-act="close-shell" aria-label="Close">${I.close(22)}</button>
   </header>`;
 }
 
@@ -96,15 +97,16 @@ function shell(active, body) {
   </div>`;
 }
 
-function wizardShell(stepIdx, body, narrow) {
+// Figma 2082:26220 (11-02): step 3 is "Test Mapping"; Field/Tested Mappings move Save as Draft to the top bar.
+function wizardShell(stepIdx, body, narrow, draftLink = false) {
   const w = S.wizard;
-  const labels = ['Details and Upload', 'Mapping', 'Save and Activate'];
+  const labels = ['Details and Upload', 'Mapping', 'Test Mapping'];
   const steps = labels.map((l, i) => {
     const st = i < stepIdx ? 'done' : i === stepIdx ? 'current' : '';
     return `<div class="step ${st}" ${st === 'current' ? 'aria-current="step"' : ''}><span class="num">${i < stepIdx ? I.check(16) : i + 1}</span>${l}</div>`;
   }).join('');
   return `<div class="shell wizard">
-    ${topbar(w.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping')}
+    ${topbar(w.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping', draftLink)}
     <aside><div class="steps" aria-label="Progress">${steps}</div></aside>
     <main class="main"><div class="content ${narrow ? 'narrow' : ''}">${body}</div></main>
   </div>`;
@@ -359,15 +361,15 @@ function viewFields() {
       </tbody>
     </table></div>
     <div class="wizard-footer">
-      <button class="btn btn-outline btn-pill" data-act="save-draft">Save as Draft</button>
+      <button class="btn btn-outline btn-pill" data-act="back-to-details">Back</button>
       <button class="btn btn-primary btn-pill" data-act="run-test" ${U.testing ? 'disabled aria-busy="true"' : ''}>${U.testing ? '<span class="spinner" aria-label="Testing"></span>' : 'Test Mapping'}</button>
-    </div>`);
+    </div>`, false, true);
 }
 
 function viewTested() {
   const w = S.wizard;
   if (!w.result) { go('create/fields'); return ''; }
-  const mapped = w.fields.filter(f => f.source).length + 15;
+  const mapped = w.fields.filter(f => f.source).length + 16; // 3 sample rows mapped → "19 of 19" as in Figma
   const body = w.result === 'errors'
     ? `<div class="alert critical" role="alert">${I.alert(20)}<div><div class="a-title">Errors found</div>
         <div class="a-desc">Restart the process to resolve these errors. Review the details below to ensure the information is correct before restarting.</div></div></div>
@@ -390,11 +392,11 @@ function viewTested() {
     ${titleRow('Tested Mappings')}
     ${body}
     <div class="wizard-footer">
-      <button class="btn btn-outline btn-pill" data-act="save-draft">Save as Draft</button>
       ${w.result === 'errors'
-        ? `<button class="btn btn-primary btn-pill" data-act="back-to-fields">Back to Field Mappings</button>`
-        : `<button class="btn btn-primary btn-pill" data-act="save-activate">Save and Activate</button>`}
-    </div>`);
+        ? `<button class="btn btn-outline btn-pill" style="width:552px" data-act="back-to-fields">Back</button>`
+        : `<button class="btn btn-outline btn-pill" data-act="back-to-fields">Back</button>
+      <button class="btn btn-primary btn-pill" data-act="save-activate">Save and Activate</button>`}
+    </div>`, false, true);
 }
 
 /* ---------------------------------------------------------------- B2 · Transformation Runs */
@@ -665,6 +667,7 @@ document.addEventListener('click', e => {
     }
     case 'run-test': if (!U.testing) runWizardTest(); return;
     case 'back-to-fields': go('create/fields'); return;
+    case 'back-to-details': if (w.mode === 'edit') { go('mappings'); return; } go('create/details'); return;
     case 'save-draft': U.modal = null; persistMapping('Draft'); return;
     case 'save-activate': persistMapping('Active'); return;
     case 'download-csv': downloadCsv(id); return;
