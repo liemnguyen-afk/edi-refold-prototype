@@ -340,9 +340,9 @@ function viewFields() {
   const rows = w.fields.map((f, i) => `<tr>
       <td class="tf"><b>${esc(f.target)}</b><small>Optional-Standard</small></td>
       <td>${f.source ? esc(f.source) : '—'}</td>
-      <td>${chip(f.type)}</td>
-      <td>${chip(f.transform)}</td>
-      <td>${chip(f.confidence, 'positive')}</td>
+      <td>${esc(f.type)}</td>
+      <td>${esc(f.transform)}</td>
+      <td class="confidence">${esc(f.confidence)}</td>
       <td><div class="actions">
         ${iconBtn('flag-field', I.flag(18), f.flagged ? 'Flagged for review' : 'Flag for review', `data-i="${i}"`, f.flagged ? 'flagged' : '')}
         ${iconBtn('edit-field', I.edit(18), 'Edit mapping', `data-i="${i}"`)}
