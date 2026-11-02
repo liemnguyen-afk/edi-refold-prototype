@@ -160,6 +160,11 @@ table.grid tbody tr:nth-child(odd) td { background: var(--cui-color-s3-surface-r
 table.grid tbody tr:last-child td:first-child { border-bottom-left-radius: var(--cui-radii-xs); }
 table.grid tbody tr:last-child td:last-child { border-bottom-right-radius: var(--cui-radii-xs); }
 table.grid .actions { display: flex; gap: var(--cui-space-2xs); }
+/* Tablegrid Size=Regular (Figma 2082:60014 / 2082:26467): 52px rows, 16px text, medium chips.
+ * Field Mappings keeps its own two-line rows. */
+table.grid:not(.fields) tbody td { height: 52px; font-size: var(--cui-font-size-md); }
+table.grid:not(.fields) .chip { height: 24px; padding: 0 var(--cui-space-md); font-size: var(--cui-font-size-xs); }
+table.grid:not(.fields) .more-link { height: 24px; padding: 0 var(--cui-space-sm); font-size: var(--cui-font-size-xs); }
 /* Supplier "+N" link and popover (EDI Mappings list) */
 .sup-cell { display: inline-flex; align-items: center; gap: var(--cui-space-xs); }
 .sup-more { position: relative; display: inline-flex; }
