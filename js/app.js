@@ -1,6 +1,6 @@
 /* EDI 855 via Refold — clickable prototype.
  * Single page, hash-routed. Every screen maps to a frame on the Figma page
- * "🟢 EDI Flow (10-28-2026)" (file bY5gXB45SnlXQjqclWsMwr, node 2082:25031). */
+ * "🟢 EDI Flow (11-6-2026)" (file bY5gXB45SnlXQjqclWsMwr, node 2082:25031). */
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -10,7 +10,6 @@ const $app = document.getElementById('app');
    Clarity 2 icon set (201-Icons-DLS-C2L) — paths in js/icons.js, exported from the Figma library. */
 const clarityIcon = name => (s = 20) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${CLARITY_ICON_PATHS[name]}"/></svg>`;
 const I = Object.fromEntries(Object.keys(CLARITY_ICON_PATHS).map(k => [k, clarityIcon(k)]));
-I.mapping = I.toggleOff; // left-nav icon for EDI Transformations (switch-field-outline, as in Figma)
 // Test Mapping action — Clarity flask icon exported from Figma 2082:26467 (28px button, 14px glyph)
 I.flask = s => `<svg width="${s}" height="${s}" viewBox="4 4 20 20" fill="currentColor" aria-hidden="true"><path d="M9.33338 19.6666C8.90816 19.6666 8.60593 19.4769 8.42671 19.0974C8.24738 18.7179 8.29066 18.3649 8.55654 18.0384L12.3334 13.4486V9.33325H11.5385C11.3969 9.33325 11.2781 9.28531 11.1822 9.18942C11.0864 9.09353 11.0385 8.97475 11.0385 8.83309C11.0385 8.69131 11.0864 8.57259 11.1822 8.47692C11.2781 8.38114 11.3969 8.33325 11.5385 8.33325H16.4615C16.6032 8.33325 16.722 8.3812 16.8179 8.47709C16.9137 8.57297 16.9615 8.69175 16.9615 8.83342C16.9615 8.9752 16.9137 9.09392 16.8179 9.18959C16.722 9.28536 16.6032 9.33325 16.4615 9.33325H15.6667V13.4486L19.4435 18.0384C19.7094 18.3649 19.7527 18.7179 19.5734 19.0974C19.3942 19.4769 19.0919 19.6666 18.6667 19.6666H9.33338ZM9.33338 18.6666H18.6667L14.6667 13.7999V9.33325H13.3334V13.7999L9.33338 18.6666Z"/></svg>`;
 
@@ -20,11 +19,13 @@ const STORE_KEY = 'edi.state';
 const today = () => { const d = new Date(); return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}/${d.getFullYear()}`; };
 const nowTime = () => { const d = new Date(); return `Today ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
 
-const freshWizard = () => ({ mode: 'create', editId: null, name: '', suppliers: [], file: null, template: 'default',
+// A5 · Test Mapping action (Figma 2316:3539 / 2316:4417 / 2316:4658)
+const freshTestPage = (policyId = null) => ({ policyId, file: null, attempts: 0, result: null, testRun: null });
+const freshWizard = () => ({ mode: 'create', editId: null, name: '', suppliers: [], file: null,
   fields: clone(FIELD_MAPPINGS), testAttempts: 0, result: null, testRun: null, nameError: false });
 
 function defaultState() {
-  return { mappings: [], tests: [], wizard: freshWizard(), testBehavior: 'fail-then-pass' };
+  return { mappings: [], tests: [], wizard: freshWizard(), testBehavior: 'fail-then-pass', testPage: freshTestPage() };
 }
 let S = (() => { try { return { ...defaultState(), ...JSON.parse(localStorage.getItem(STORE_KEY)) }; } catch { return defaultState(); } })();
 const save = () => localStorage.setItem(STORE_KEY, JSON.stringify(S));
@@ -41,7 +42,7 @@ function toast(msg, kind = 'positive', undo = null) {
 }
 
 /* ---------------------------------------------------------------- Router */
-const ROUTES = ['setup', 'mappings', 'create/details', 'create/connecting', 'create/fields', 'create/tested', 'tests'];
+const ROUTES = ['setup', 'mappings', 'create/details', 'create/connecting', 'create/fields', 'create/tested', 'test-mapping', 'test-mapping/result', 'tests'];
 const route = () => { const r = location.hash.replace(/^#\/?/, ''); return ROUTES.includes(r) ? r : 'setup'; };
 const go = r => { if (location.hash === '#/' + r) render(); else location.hash = '#/' + r; };
 window.addEventListener('hashchange', () => { U.msOpen = false; U.filterOpen = false; U.testFilterOpen = false; render(); window.scrollTo(0, 0); });
@@ -61,22 +62,22 @@ function topbar(title, draftLink = false) {
   </header>`;
 }
 
-function shell(active, body) {
-  const item = (key, href, icon, label) => `<a href="#/${href}" class="${active === key ? 'active' : ''}" ${active === key ? 'aria-current="page"' : ''}>${icon}${label}</a>`;
+// Figma 11-06: the left rail shows one numbered item naming the current page.
+function shell(label, body) {
   return `<div class="shell">
     ${topbar('')}
     <aside class="sidenav"><nav aria-label="EDI Integration">
-      ${item('mappings', 'mappings', I.mapping(20), 'EDI Transformations')}
-      ${item('tests', 'tests', I.clipboard(20), 'Transformation Runs')}
+      <div class="step current" aria-current="page"><span class="num">1</span>${esc(label)}</div>
     </nav></aside>
     <main class="main">${body}</main>
   </div>`;
 }
 
-// Figma 2082:26220 (11-02): step 3 is "Test Mapping"; Field/Tested Mappings move Save as Draft to the top bar.
+// Figma 2082:26220 (11-06): the stepper starts at EDI Mappings and only lists steps reached so far;
+// Field/Tested Mappings put Save as Draft in the top bar.
 function wizardShell(stepIdx, body, narrow, draftLink = false) {
   const w = S.wizard;
-  const labels = ['Details and Upload', 'Mapping', 'Test Mapping'];
+  const labels = ['EDI Mappings', 'Details and Upload', 'Mapping', 'Test Mapping'].slice(0, stepIdx + 1);
   const steps = labels.map((l, i) => {
     const st = i < stepIdx ? 'done' : i === stepIdx ? 'current' : '';
     return `<div class="step ${st}" ${st === 'current' ? 'aria-current="step"' : ''}><span class="num">${i < stepIdx ? I.check(16) : i + 1}</span>${l}</div>`;
@@ -116,8 +117,10 @@ function filterPopover(open, act, values, selected) {
 function viewSetup() {
   const nav = ['Travel & Expenses', 'Requests', 'Orders', 'Invoices', 'Community', 'Inventory', 'Sourcing', 'Suppliers', 'Items', 'Reports', 'Quality', 'Setup'];
   const sub = ['All Setup Items', 'Company Info', 'Accounts', 'Users', 'Approvals', 'Budget Periods', 'Budget Lines'];
-  const box = ([title, links]) => `<section class="box"><h2>${esc(title)}</h2><ul>${links.map(l => l === 'EDI Transformations'
-    ? `<li><a href="#/mappings" class="target">EDI Transformations</a></li>`
+  // Figma A0 2082:26225 / 2082:59973: both EDI links sit under Integrations
+  const targets = { 'EDI Transformations': 'mappings', 'Transformation Runs': 'tests' };
+  const box = ([title, links]) => `<section class="box"><h2>${esc(title)}</h2><ul>${links.map(l => targets[l]
+    ? `<li><a href="#/${targets[l]}" class="target">${esc(l)}</a></li>`
     : `<li><a href="#" data-stub>${esc(l)}</a></li>`).join('')}</ul></section>`;
   return `<div class="classic-page">
     <header class="gh">
@@ -178,16 +181,16 @@ function viewMappings() {
     </div>`;
 
   if (!S.mappings.length) {
-    return shell('mappings', `<div class="content">
+    return shell('EDI Mappings', `<div class="content">
       ${toastHtml()}
       <div>
-        <h1 class="page-title">EDI Transformations</h1>
+        <h1 class="page-title">EDI Mappings</h1>
         <p class="page-desc">Mappings that transform supplier EDI 855 files into Coupa order confirmations.</p>
       </div>
       ${docType.replace('width:300px', 'width:420px').replace('EDI 855 — PO Acknowledgment', 'EDI 855 — Purchase Order Acknowledgment')}
       <section class="card empty">
         ${I.fileAdd(48)}
-        <h3>No EDI 855 mappings yet</h3>
+        <h3>No EDI mappings yet</h3>
         <p>To begin, click ‘Create Mapping Policy’ to create mapping for your EDI file sample.</p>
         <button class="btn btn-primary" data-act="create">${I.plusCircle(20)} Create mapping</button>
       </section>
@@ -213,11 +216,11 @@ function viewMappings() {
       </div></td>
     </tr>`).join('') : `<tr class="empty-row"><td colspan="6">No mappings match your search or filters.</td></tr>`;
 
-  return shell('mappings', `<div class="content">
+  return shell('EDI Mappings', `<div class="content">
     ${toastHtml()}
     <div class="header-row">
       <div>
-        <h1 class="page-title">EDI Transformations</h1>
+        <h1 class="page-title">EDI Mappings</h1>
         <p class="page-desc">All supplier mapping policies for the selected EDI document type.</p>
       </div>
       ${docType}
@@ -244,12 +247,9 @@ function viewDetails() {
   const chosen = w.suppliers.map(id => SUPPLIERS.find(s => s.id === id)).filter(Boolean);
   const q = U.msQuery.trim().toLowerCase();
   const opts = SUPPLIERS.filter(s => !q || `${s.name} ${s.id}`.toLowerCase().includes(q));
-  const templateHelp = w.template === 'default'
-    ? 'The default transformation mapping uses generic interpretation of EDI documents. You can customize and save supplier specific mappings if the EDI payload has customer segments or ERP specific fields.'
-    : 'Starts from an existing mapping policy. Field mappings are copied and can be edited in the next step.';
 
   const upload = w.file
-    ? `<div class="field"><span class="label">Uploaded EDI file <span class="req">*</span></span>
+    ? `<div class="field"><span class="label">Uploaded EDI file</span>
         <div class="file-item">
           <span class="thumb">${I.file(22)}</span>
           <div class="grow"><div class="name">${esc(w.file.name)}</div><div class="meta">Uploaded · ${w.file.segments} segments detected</div></div>
@@ -265,7 +265,7 @@ function viewDetails() {
         ${w.fileError ? `<span class="help error" id="file-err">Upload an EDI file to create the mapping.</span>` : ''}
         <input type="file" id="file-input" accept=".edi,.x12,.txt" hidden></div>`;
 
-  return wizardShell(0, `
+  return wizardShell(1, `
     <h1 class="page-title">Details and Upload</h1>
     <div class="form">
       <div class="field">
@@ -288,11 +288,6 @@ function viewDetails() {
         </div>
       </div>
       ${upload}
-      <div class="field">
-        <label for="template">Choose a mapping template</label>
-        <select id="template" class="select" data-input="template">${TEMPLATES.map(([v, l]) => `<option value="${v}" ${w.template === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
-        <span class="help">${templateHelp}</span>
-      </div>
     </div>
     <div class="wizard-footer"><button class="btn btn-primary btn-pill" style="width:552px" data-act="next">Next</button></div>
   `, true);
@@ -325,7 +320,7 @@ function viewFields() {
         ${iconBtn('delete-field', I.trash(18), 'Delete mapping', `data-i="${i}"`)}
       </div></td>
     </tr>`).join('');
-  return wizardShell(1, `
+  return wizardShell(2, `
     ${toastHtml()}
     ${titleRow('Field Mappings')}
     <div class="table-card"><table class="grid fields">
@@ -342,48 +337,111 @@ function viewFields() {
     </div>`, false, true);
 }
 
-function viewTested() {
-  const w = S.wizard;
-  if (!w.result) { go('create/fields'); return ''; }
-  const mapped = w.fields.filter(f => f.source).length + 16; // 3 sample rows mapped → "19 of 19" as in Figma
-  const body = w.result === 'errors'
+// Tested Mappings body, shared by the wizard and the list's Test Mapping action.
+// Figma 2082:38126 (11-06): the errors view also shows the run summary above the errors table.
+function testResultBody(result, run, total = 19) {
+  const passed = result === 'errors' ? total - 4 : total;
+  const summary = `<section class="card summary">
+        <div><div class="k">Test file</div><div class="v">${esc(run.file)}</div></div>
+        <div><div class="k">Test run</div><div class="v">${run.id} · ${esc(run.started)}</div></div>
+        <div><div class="k">Lines tested</div><div class="v">4</div></div>
+        <div><div class="k">Fields passed</div><div class="v">${passed} of ${total} mapped</div></div>
+        <div><div class="k">Confirmations</div><div class="v">1 (test only)</div></div>
+        <button class="btn btn-outline blue" data-act="download-csv" data-id="${run.id}">Download CSV</button>
+      </section>`;
+  return result === 'errors'
     ? `<div class="alert critical" role="alert">${I.alert(20)}<div><div class="a-title">Errors found</div>
         <div class="a-desc">Restart the process to resolve these errors. Review the details below to ensure the information is correct before restarting.</div></div></div>
+      ${summary}
       <section class="card errors-card"><table class="plain">
         <thead><tr><th>Value</th><th>Row</th><th>Field</th><th>Description</th></tr></thead>
         <tbody>${TEST_ERRORS.map(e => `<tr><td>${e.value}</td><td>${e.row}</td><td>${e.field}</td><td>${e.desc}</td></tr>`).join('')}</tbody>
       </table></section>`
     : `<div class="alert positive" role="status">${I.checkCircle(20)}<div><div class="a-title">Test mappings succeeded</div>
         <div class="a-desc">All mapped fields transformed without errors. No confirmations were created. Save and activate to go live.</div></div></div>
-      <section class="card summary">
-        <div><div class="k">Test file</div><div class="v">${esc(w.testRun.file)}</div></div>
-        <div><div class="k">Test run</div><div class="v">${w.testRun.id} · ${w.testRun.started.replace('Today ', 'Today ')}</div></div>
-        <div><div class="k">Lines tested</div><div class="v">4</div></div>
-        <div><div class="k">Fields passed</div><div class="v">${mapped} of ${mapped} mapped</div></div>
-        <div><div class="k">Confirmations</div><div class="v">1 (test only)</div></div>
-        <button class="btn btn-outline blue" data-act="download-csv" data-id="${w.testRun.id}">Download CSV</button>
-      </section>`;
-  // Figma 2082:45979 — once the test passes, Mapping is done and Save and Activate is the current step
-  return wizardShell(w.result === 'success' ? 2 : 1, `
-    ${titleRow('Tested Mappings')}
-    ${body}
-    <div class="wizard-footer">
-      ${w.result === 'errors'
-        ? `<button class="btn btn-outline btn-pill" style="width:552px" data-act="back-to-fields">Back</button>`
-        : `<button class="btn btn-outline btn-pill" data-act="back-to-fields">Back</button>
+      ${summary}`;
+}
+
+const resultFooter = (result, backAct) => `<div class="wizard-footer">
+      ${result === 'errors'
+        ? `<button class="btn btn-outline btn-pill" style="width:552px" data-act="${backAct}">Back</button>`
+        : `<button class="btn btn-outline btn-pill" data-act="${backAct}">Back</button>
       <button class="btn btn-primary btn-pill" data-act="save-activate">Save and Activate</button>`}
-    </div>`, false, true);
+    </div>`;
+
+function viewTested() {
+  const w = S.wizard;
+  if (!w.result) { go('create/fields'); return ''; }
+  const mapped = w.fields.filter(f => f.source).length + 16; // 3 sample rows mapped → "19 of 19" as in Figma
+  // Figma 2082:45979 — once the test passes, Mapping is done and Test Mapping is the current step
+  return wizardShell(w.result === 'success' ? 3 : 2, `
+    ${titleRow('Tested Mappings')}
+    ${testResultBody(w.result, w.testRun, mapped)}
+    ${resultFooter(w.result, 'back-to-fields')}`, false, true);
+}
+
+/* ---------------------------------------------------------------- A5 · Test Mapping action (policy → upload → Tested Mappings) */
+// Last test status for a mapping: newest run logged against it, else the seed value.
+function lastTestStatus(m) {
+  const t = S.tests.find(x => x.policyId === m.id || x.policy === m.name);
+  return t?.status || m.lastTest || SEED_MAPPINGS.find(x => x.id === m.id)?.lastTest || null;
+}
+
+function viewTestMapping() {
+  const tp = S.testPage, m = S.mappings.find(x => x.id === tp.policyId);
+  if (!m) { go('mappings'); return ''; }
+  const last = lastTestStatus(m);
+  const upload = tp.file
+    ? `<div class="field"><span class="label">Uploaded EDI file</span>
+        <div class="file-item">
+          <span class="thumb">${I.file(22)}</span>
+          <div class="grow"><div class="name">${esc(tp.file.name)}</div><div class="meta">Uploaded · ${tp.file.segments} segments detected</div></div>
+          ${iconBtn('tp-remove-file', I.trash(20), 'Remove file')}
+        </div></div>`
+    : `<div class="field"><span class="label" id="tp-file-label">Upload your file to create Mapping</span>
+        <div class="dropzone ${U.drag ? 'drag' : ''}" data-dropzone="test-page" role="group" aria-labelledby="tp-file-label">
+          ${I.upload(32)}
+          <div class="t">Drag and drop your files here.</div>
+          <div class="c">.edi, .x12 or .txt · max 10 MB</div>
+          <button type="button" class="btn btn-primary" data-act="pick-file">Browse</button>
+        </div>
+        <input type="file" id="file-input" accept=".edi,.x12,.txt" hidden></div>`;
+  return shell('Test Mapping', `<div class="content test-page">
+    <h1 class="page-title muted">Test Mapping</h1>
+    <table class="grid policy">
+      <thead><tr><th>Mapping Policy ID</th><th>Supplier</th><th>Mapping Policy Name</th><th>Created Date</th><th>Last Status</th></tr></thead>
+      <tbody><tr>
+        <td><a href="#" data-act="edit-mapping" data-id="${m.id}">${m.id}</a></td>
+        <td>${esc(mappingSuppliers(m).join(', ') || 'Any supplier')}</td>
+        <td>${esc(m.name)}</td><td>${esc(m.created)}</td>
+        <td>${last ? chip(last) : '—'}</td>
+      </tr></tbody>
+    </table>
+    <p class="lead">Choose the EDI document type you want to configure for order confirmations. Coupa provides an out-of-the-box mapping for each supported format.</p>
+    ${upload}
+    <div class="wizard-footer"><button class="btn btn-primary btn-pill" style="width:544px" data-act="tp-run" ${!tp.file || U.testing ? 'disabled' : ''} ${U.testing ? 'aria-busy="true"' : ''}>${U.testing ? '<span class="spinner" aria-label="Testing"></span>' : 'Test Mapping'}</button></div>
+  </div>`);
+}
+
+function viewTestMappingResult() {
+  const tp = S.testPage;
+  if (!tp.result) { go('test-mapping'); return ''; }
+  return shell('Test Mapping', `<div class="content">
+    <div class="title-row"><h1 class="page-title">Tested Mappings</h1>${chip('EDI 855', 'info')}</div>
+    ${testResultBody(tp.result, tp.testRun)}
+    ${resultFooter(tp.result, 'tp-back')}
+  </div>`);
 }
 
 /* ---------------------------------------------------------------- B2 · Transformation Runs */
 function viewTests() {
   if (!S.tests.length) {
-    return shell('tests', `<div class="content">
+    return shell('Transformation Runs', `<div class="content">
       ${toastHtml()}
-      <div><h1 class="page-title">Transformation Runs</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
+      <div><h1 class="page-title">Test Transformations</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
       <section class="card empty">
         ${I.fileAdd(48)}
-        <h3>No transformation runs yet</h3>
+        <h3>No test transformations yet</h3>
         ${S.mappings.length
           ? `<p>To begin, click on “New test” to perform test mappings for your Suppliers</p>
         <button class="btn btn-primary btn-lg" data-act="new-test">${I.plusCircle(20)} New Test</button>`
@@ -404,9 +462,9 @@ function viewTests() {
         ${iconBtn('download-csv', I.download(18), t.status === 'Succeeded' ? 'Download CSV' : 'Output not available', `data-id="${t.id}"`)}
       </div></td>
     </tr>`).join('') : `<tr class="empty-row"><td colspan="7">No test runs match your search or filters.</td></tr>`;
-  return shell('tests', `<div class="content">
+  return shell('Transformation Runs', `<div class="content">
     ${toastHtml()}
-    <div><h1 class="page-title">Transformation Runs</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
+    <div><h1 class="page-title">Transformation Runs</h1><p class="page-desc">Recent test runs.</p></div>
     <div class="toolbar">
       <button class="btn btn-outline" data-act="new-test">${I.plusCircle(20)} New test</button>
       <label class="search"><span class="sr-only">Search test runs</span>${I.search(20)}<input id="test-search" class="input" placeholder="Search" value="${esc(U.testSearch)}" data-input="testSearch"></label>
@@ -489,9 +547,9 @@ function render() {
   const sel = focusId && 'selectionStart' in active ? [active.selectionStart, active.selectionEnd] : null;
 
   const view = { setup: viewSetup, mappings: viewMappings, 'create/details': viewDetails, 'create/connecting': viewConnecting,
-    'create/fields': viewFields, 'create/tested': viewTested, tests: viewTests }[r];
+    'create/fields': viewFields, 'create/tested': viewTested, 'test-mapping': viewTestMapping, 'test-mapping/result': viewTestMappingResult, tests: viewTests }[r];
   $app.innerHTML = view() + modalHtml();
-  document.title = { setup: 'Setup', mappings: 'EDI Transformations', tests: 'Transformation Runs' }[r] || (S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
+  document.title = { setup: 'Setup', mappings: 'EDI Mappings', tests: 'Transformation Runs' }[r] || (r.startsWith('test-mapping') ? 'Test Mapping' : S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
   document.title += ' · Coupa';
 
   if (focusId) {
@@ -549,6 +607,22 @@ function runWizardTest() {
   }, 1800);
 }
 
+function runPolicyTest() {
+  U.testing = true; render();
+  setTimeout(() => {
+    U.testing = false;
+    const tp = S.testPage, m = S.mappings.find(x => x.id === tp.policyId);
+    tp.attempts += 1;
+    const b = S.testBehavior;
+    tp.result = b === 'always-pass' ? 'success' : b === 'always-fail' ? 'errors' : (tp.attempts === 1 ? 'errors' : 'success');
+    const run = { id: nextTestId(), file: tp.file.name, supplier: (m.supplier || '').replace(/\s*\(.*$/, '') || 'Any supplier',
+      policy: m.name, policyId: m.id, started: nowTime(), status: tp.result === 'success' ? 'Succeeded' : 'Failed' };
+    S.tests.unshift(run);
+    tp.testRun = run; save();
+    go('test-mapping/result');
+  }, 1800);
+}
+
 function scheduleTest(id) {
   setTimeout(() => { const t = S.tests.find(x => x.id === id); if (!t) return; t.status = 'Transforming'; save(); render(); }, 1200);
   setTimeout(() => { const t = S.tests.find(x => x.id === id); if (!t) return; t.status = /bad|fail/i.test(t.file) ? 'Failed' : 'Succeeded'; save();
@@ -556,7 +630,7 @@ function scheduleTest(id) {
 }
 
 function downloadCsv(id) {
-  const t = S.tests.find(x => x.id === id) || S.wizard.testRun;
+  const t = S.tests.find(x => x.id === id) || S.wizard.testRun || S.testPage.testRun;
   if (!t || t.status !== 'Succeeded') { toast('No output — this run did not succeed.', 'neutral'); render(); return; }
   const rows = [['PO Number', 'Line Number', 'Confirmation Action', 'Confirmed Quantity', 'Confirmed Price', 'Promised Date', 'Channel'],
     ['4471', '1', 'accept', '10', '12.50', '2026-10-30', 'EDI'], ['4471', '2', 'accept', '5', '40.00', '2026-10-30', 'EDI'],
@@ -568,7 +642,9 @@ function downloadCsv(id) {
 
 function onFile(file) {
   const f = { name: file.name, segments: Math.max(4, Math.min(48, Math.round(file.size / 60) || 14)) };
-  if (U.modal?.type === 'new-test') U.modal.file = f; else { S.wizard.file = f; S.wizard.fileError = false; save(); }
+  if (U.modal?.type === 'new-test') U.modal.file = f;
+  else if (route() === 'test-mapping') { S.testPage.file = f; save(); }
+  else { S.wizard.file = f; S.wizard.fileError = false; save(); }
   render();
 }
 
@@ -587,7 +663,7 @@ document.addEventListener('click', e => {
   switch (act) {
     case 'close-shell':
       if (route().startsWith('create/') && (w.name || w.file || w.suppliers.length)) { U.modal = { type: 'leave' }; break; }
-      go(route().startsWith('create/') ? 'mappings' : 'setup'); return;
+      go(route().startsWith('create/') || route().startsWith('test-mapping') ? 'mappings' : 'setup'); return;
     case 'confirm-leave': U.modal = null; S.wizard = freshWizard(); save(); go('mappings'); return;
     case 'overlay': if (e.target !== el) return; U.modal = null; break;
     case 'close-modal': U.modal = null; break;
@@ -607,7 +683,7 @@ document.addEventListener('click', e => {
       const idx = S.mappings.findIndex(x => x.id === id), [m] = S.mappings.splice(idx, 1); save(); U.modal = null;
       toast(`“${esc(m.name)}” deleted.`, 'neutral', () => { S.mappings.splice(idx, 0, m); save(); }); break;
     }
-    case 'test-mapping': U.modal = { type: 'new-test', policyId: id, file: null }; go('tests'); return;
+    case 'test-mapping': S.testPage = freshTestPage(id); save(); go('test-mapping'); return;
     case 'toggle-filter': U.filterOpen = !U.filterOpen; break;
     case 'show-suppliers': U.supPop = U.supPop === id ? null : id; break;
     case 'status-filter': U.statusFilter = el.checked ? [...U.statusFilter, el.value] : U.statusFilter.filter(v => v !== el.value); break;
@@ -645,7 +721,16 @@ document.addEventListener('click', e => {
     case 'back-to-fields': go('create/fields'); return;
     case 'back-to-details': if (w.mode === 'edit') { go('mappings'); return; } go('create/details'); return;
     case 'save-draft': U.modal = null; persistMapping('Draft'); return;
-    case 'save-activate': persistMapping('Active'); return;
+    case 'save-activate': {
+      if (!route().startsWith('test-mapping')) { persistMapping('Active'); return; }
+      const m = S.mappings.find(x => x.id === S.testPage.policyId);
+      m.status = 'Active'; S.testPage = freshTestPage(); save();
+      toast(`“${esc(m.name)}” published and set as active.`); go('mappings'); return;
+    }
+    // Test Mapping action
+    case 'tp-remove-file': S.testPage.file = null; save(); break;
+    case 'tp-run': if (!U.testing && S.testPage.file) runPolicyTest(); return;
+    case 'tp-back': S.testPage.result = null; save(); go('test-mapping'); return;
     case 'download-csv': downloadCsv(id); return;
 
     // Transformation Runs
@@ -671,12 +756,10 @@ document.addEventListener('input', e => {
   const k = e.target.dataset.input;
   if (!k) return;
   if (k === 'name') { S.wizard.name = e.target.value; if (S.wizard.nameError && e.target.value.trim()) { S.wizard.nameError = false; save(); render(); return; } save(); return; }
-  if (k === 'template') { S.wizard.template = e.target.value; save(); render(); return; }
   U[k] = e.target.value; render();
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'file-input' && e.target.files[0]) onFile(e.target.files[0]);
-  if (e.target.dataset.input === 'template') { S.wizard.template = e.target.value; save(); render(); }
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { if (U.modal) U.modal = null; const pop = U.supPop; U.msOpen = U.filterOpen = U.testFilterOpen = false; U.supPop = null; render();
@@ -694,10 +777,11 @@ document.addEventListener('keydown', e => {
 
 /* ---------------------------------------------------------------- Prototype navigator (reviewer tool, not product UI) */
 const PROTO = [
-  ['Entry point', [['setup', 'A0 · Setup › Integrations › EDI Transformations']]],
-  ['EDI Transformations', [['zero', 'A1 · EDI Transformations — zero state'], ['list', 'A5 · EDI Transformations — list (sample data)']]],
+  ['Entry point', [['setup', 'A0 · Setup › Integrations › EDI Mappings']]],
+  ['EDI Mappings', [['zero', 'A1 · EDI Mappings — zero state'], ['list', 'A5 · EDI Mappings — list (sample data)']]],
   ['Create Mapping', [['details', 'Details and Upload — empty'], ['details-filled', 'Details and Upload — filled'], ['connecting', 'Mapping — parsing the EDI file'],
     ['fields', 'Field Mappings'], ['errors', 'Tested Mappings — errors found'], ['success', 'Tested Mappings — succeeded']]],
+  ['Test Mapping action', [['tp', 'A5 · Test Mapping — upload'], ['tp-filled', 'A5 · Test Mapping — file attached'], ['tp-success', 'A5 · Tested Mappings — succeeded']]],
   ['Transformation Runs', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
   ['Helpers', [['attach', 'Attach sample EDI file (acme_po_4471_855.edi)']]],
 ];
@@ -716,9 +800,16 @@ function protoGo(key) {
       S.wizard.result = key; S.wizard.testRun = { id: 'TR-1047', file: S.wizard.file?.name || 'acme_po_4471_855.edi', supplier: 'Acme Industrial', policy: S.wizard.name, started: 'Today 15:12', status: key === 'success' ? 'Succeeded' : 'Failed' };
       save(); go('create/tested'); break;
     }
+    case 'tp': case 'tp-filled': case 'tp-success': {
+      if (!S.mappings.length) S.mappings = clone(SEED_MAPPINGS);
+      S.testPage = { ...freshTestPage(S.mappings[0].id), file: key === 'tp' ? null : sampleFile() };
+      if (key === 'tp-success') { S.testPage.result = 'success'; S.testPage.testRun = { id: 'TR-1047', file: 'acme_po_4471_855.edi', started: 'Today 15:12', status: 'Succeeded' }; }
+      save(); go(key === 'tp-success' ? 'test-mapping/result' : 'test-mapping'); break;
+    }
     case 'tests-zero': S.tests = []; save(); go('tests'); break;
     case 'attach': // reviewer shortcut for the upload areas (no real file needed)
       if (U.modal?.type === 'new-test') { U.modal.file = sampleFile(); render(); break; }
+      if (route() === 'test-mapping') { S.testPage.file = sampleFile(); save(); render(); break; }
       if (route() !== 'create/details') { S.wizard = { ...freshWizard(), ...S.wizard, file: null }; save(); go('create/details'); }
       S.wizard.file = sampleFile(); S.wizard.fileError = false; save(); render(); break;
     case 'tests': if (!S.tests.length) S.tests = clone(SEED_TESTS); if (!S.mappings.length) S.mappings = clone(SEED_MAPPINGS); save(); go('tests'); break;
@@ -727,7 +818,8 @@ function protoGo(key) {
 function renderProtoNav(r) {
   let root = document.querySelector('.proto-nav');
   const hereKey = { setup: 'setup', mappings: S.mappings.length ? 'list' : 'zero', 'create/details': S.wizard.name ? 'details-filled' : 'details', 'create/connecting': 'connecting',
-    'create/fields': 'fields', 'create/tested': S.wizard.result === 'success' ? 'success' : 'errors', tests: S.tests.length ? 'tests' : 'tests-zero' }[r];
+    'create/fields': 'fields', 'create/tested': S.wizard.result === 'success' ? 'success' : 'errors', 'test-mapping': S.testPage.file ? 'tp-filled' : 'tp',
+    'test-mapping/result': 'tp-success', tests: S.tests.length ? 'tests' : 'tests-zero' }[r];
   const open = root?.classList.contains('open');
   root?.remove();
   document.body.insertAdjacentHTML('beforeend', `<div class="proto-nav ${open ? 'open' : ''}">

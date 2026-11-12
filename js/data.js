@@ -1,5 +1,5 @@
 /* Sample data for the EDI 855 via Refold prototype. Values match the Figma screens
- * (🟢 EDI Flow 10-28-2026, file bY5gXB45SnlXQjqclWsMwr). */
+ * (🟢 EDI Flow 11-6-2026, file bY5gXB45SnlXQjqclWsMwr). */
 
 const SUPPLIERS = [
   { id: 'SUP-100482', name: 'Acme Industrial' },
@@ -12,15 +12,9 @@ const SUPPLIERS = [
   { id: 'SUP-104211', name: 'Northwind Parts' },
 ];
 
-const TEMPLATES = [
-  ['default', 'Default EDI template'],
-  ['acme-emea', 'Acme Supplier EMEA (copy)'],
-  ['generic-x12', 'Generic X12 4010 855'],
-];
-
 // A5 · EDI Mappings — list (newest first). `more` = additional suppliers shown behind the +N link.
 const SEED_MAPPINGS = [
-  { id: 'MAP-0098', supplier: 'Random Supplier (SUP-100482)', name: 'Supplier Integration', created: '10/27/2026', status: 'Active' },
+  { id: 'MAP-0098', supplier: 'Random Supplier (SUP-100482)', name: 'Supplier Integration', created: '10/27/2026', status: 'Active', lastTest: 'Succeeded' },
   { id: 'MAP-0087', supplier: 'Tech Innovators (SUP-101330)', more: ['Acme Components (SUP-101330)', 'Northwind Parts (SUP-104211)', 'Global Traders (SUP-103120)'], name: 'Next Gen Mapping', created: '10/21/2026', status: 'Active' },
   { id: 'MAP-0076', supplier: 'Acme Supplies (SUP-102478)', name: 'Mapping Policy NA', created: '10/09/2026', status: 'Inactive' },
   { id: 'MAP-0054', supplier: 'Global Traders (SUP-100915)', name: 'International Mapping', created: '09/24/2026', status: 'Draft' },
@@ -64,5 +58,5 @@ const SETUP_COLUMNS = [
   [['Procurement', ['Buying Policies', 'PO Customization', 'Featured iRequest Sites', 'Manage Requisitions', 'Manage Purchase Orders', 'Manage RFQs', 'Order Lists', 'Order List Lines', 'Price Comparisons', 'Purchasing Classification Engine', 'Requisition Line Form Responses']],
    ['Platform', ['App Marketplace', "'Ask an Expert' Categories", 'Custom Footer', 'Custom Objects', 'Export to Accounting', 'Installed Apps and Content', 'Installed Marketplace Apps', 'IFrames and Panels', 'Menu Configuration', 'Notifications', 'Process Step History', 'Presentations', 'Process Automator', 'Process Instances', 'Project Templates', 'Questionnaires']]],
   [['Suppliers', ['Business Entities', 'Supplier Instructions', 'Supplier Certificate Reminders', 'Supplier Link Requests', 'Suppliers', 'Remit-To', 'Contracts', 'Supplier Portal Directory', 'Supplier Portal Catalogs', 'Supplier Reviews', 'Supplier Review Form Response', 'Items', 'Item Access Groups', 'Item Labels', 'Punchout Sites']],
-   ['Integrations', ['Integrations Control Center', 'Integrations', 'Integration Contacts', 'Integration Runs', 'Integration Errors', 'Integration Warnings', 'Integration Documentation', 'sFTP Accounts', 'EDI Transformations', 'cXML Errors', 'E-signature Accounts', 'Call Outs', 'API Filters', 'Data Mappings']]],
+   ['Integrations', ['Integrations Control Center', 'Integrations', 'Integration Contacts', 'Integration Runs', 'Integration Errors', 'Integration Warnings', 'Integration Documentation', 'sFTP Accounts', 'EDI Transformations', 'Transformation Runs', 'cXML Errors', 'E-signature Accounts', 'Call Outs', 'API Filters', 'Data Mappings']]],
 ];

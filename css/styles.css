@@ -33,13 +33,9 @@ h1, h2, h3, p { margin: 0; }
 .topbar .close { margin-left: auto; width: 36px; height: 36px; display: grid; place-items: center; border-radius: var(--cui-radii-2xl); color: var(--cui-color-text-t1); }
 .topbar .close:hover { background: var(--cui-color-neutralMinimal-surface-hover); }
 
-/* Left nav (Tab-item, Kind=Track Vertical) */
-.sidenav { padding-top: 0; }
-.sidenav nav { background: var(--cui-color-s1-surface-rest); width: 214px; }
-.sidenav a { position: relative; display: flex; align-items: center; gap: var(--cui-space-sm); height: 40px; padding: 0 var(--cui-space-md); color: var(--cui-color-text-t2); font-weight: var(--cui-font-weight-bold); font-size: var(--cui-font-size-md); }
-.sidenav a:hover { text-decoration: none; background: var(--cui-color-s1-surface-hover); }
-.sidenav a.active { color: var(--cui-color-primary-surface-rest); }
-.sidenav a.active::after { content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: var(--cui-color-primary-surface-rest); }
+/* Left nav · Figma 11-06 (2082:26253): one Stepper item naming the current page */
+.sidenav nav { width: 214px; }
+.sidenav .step { width: 214px; padding-left: var(--cui-space-sm); }
 
 /* Wizard stepper (Stepper/Progress Panel) */
 /* Stepper/Progress Panel · Figma 2082:45979 — 216px steps, 40 tall, 24 radius, 14 SemiBold */
@@ -58,6 +54,13 @@ h1, h2, h3, p { margin: 0; }
 .page-title { font-family: var(--cui-font-family-heading); font-size: var(--cui-font-size-3xl); line-height: var(--cui-font-lineHeight-xl); font-weight: var(--cui-font-weight-bold); }
 .page-desc { color: var(--cui-color-text-t2); margin-top: var(--cui-space-sm); }
 .title-row { display: flex; align-items: center; gap: var(--cui-space-lg); }
+.page-title.muted { color: var(--cui-color-text-t2); font-weight: var(--cui-font-weight-semiBold); }
+
+/* A5 · Test Mapping action · Figma 2316:3539 — 878px column, policy table on the page surface */
+.content.test-page { width: 878px; gap: var(--cui-space-2xl); }
+table.grid.policy thead th { background: var(--cui-color-s1-surface-rest); }
+table.grid.policy tbody tr td { background: transparent; height: 80px; }
+.lead { color: var(--cui-color-text-t2); font-size: var(--cui-font-size-md); line-height: var(--cui-font-lineHeight-xs); }
 .header-row { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--cui-space-2xl); }
 .wizard-footer { margin-top: auto; display: flex; justify-content: center; gap: var(--cui-space-lg); padding-top: var(--cui-space-4xl); }
 .wizard-footer .btn { width: 270px; }
