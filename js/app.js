@@ -118,7 +118,7 @@ function viewSetup() {
   const nav = ['Travel & Expenses', 'Requests', 'Orders', 'Invoices', 'Community', 'Inventory', 'Sourcing', 'Suppliers', 'Items', 'Reports', 'Quality', 'Setup'];
   const sub = ['All Setup Items', 'Company Info', 'Accounts', 'Users', 'Approvals', 'Budget Periods', 'Budget Lines'];
   // Figma A0 2082:26225 / 2082:59973: both EDI links sit under Integrations
-  const targets = { 'EDI Transformations': 'mappings', 'Transformation Runs': 'tests' };
+  const targets = { 'EDI Transformations': 'mappings', 'EDI Transformation Runs': 'tests' };
   const box = ([title, links]) => `<section class="box"><h2>${esc(title)}</h2><ul>${links.map(l => targets[l]
     ? `<li><a href="#/${targets[l]}" class="target">${esc(l)}</a></li>`
     : `<li><a href="#" data-stub>${esc(l)}</a></li>`).join('')}</ul></section>`;
@@ -433,10 +433,10 @@ function viewTestMappingResult() {
   </div>`);
 }
 
-/* ---------------------------------------------------------------- B2 · Transformation Runs */
+/* ---------------------------------------------------------------- B2 · EDI Transformation Runs */
 function viewTests() {
   if (!S.tests.length) {
-    return shell('Transformation Runs', `<div class="content">
+    return shell('EDI Transformation Runs', `<div class="content">
       ${toastHtml()}
       <div><h1 class="page-title">Test Transformations</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
       <section class="card empty">
@@ -462,9 +462,9 @@ function viewTests() {
         ${iconBtn('download-csv', I.download(18), t.status === 'Succeeded' ? 'Download CSV' : 'Output not available', `data-id="${t.id}"`)}
       </div></td>
     </tr>`).join('') : `<tr class="empty-row"><td colspan="7">No test runs match your search or filters.</td></tr>`;
-  return shell('Transformation Runs', `<div class="content">
+  return shell('EDI Transformation Runs', `<div class="content">
     ${toastHtml()}
-    <div><h1 class="page-title">Transformation Runs</h1><p class="page-desc">Recent test runs.</p></div>
+    <div><h1 class="page-title">EDI Transformation Runs</h1><p class="page-desc">Recent test runs.</p></div>
     <div class="toolbar">
       <button class="btn btn-outline" data-act="new-test">${I.plusCircle(20)} New test</button>
       <label class="search"><span class="sr-only">Search test runs</span>${I.search(20)}<input id="test-search" class="input" placeholder="Search" value="${esc(U.testSearch)}" data-input="testSearch"></label>
@@ -493,7 +493,7 @@ function modalHtml() {
   if (m.type === 'delete-mapping') {
     const map = S.mappings.find(x => x.id === m.id);
     return frame(`Delete “${esc(map.name)}”?`,
-      `<p>This removes ${map.id} from Refold. It can’t be undone. Past test runs stay in Transformation Runs.</p>
+      `<p>This removes ${map.id} from Refold. It can’t be undone. Past test runs stay in EDI Transformation Runs.</p>
        ${map.status === 'Active' ? `<div class="alert critical">${I.alert(20)}<div><div class="a-title">This mapping is active</div><div class="a-desc">New EDI 855 files from ${esc(map.supplier)} will fail with “No active mapping” until another mapping is activated.</div></div></div>` : ''}`,
       `<button class="btn btn-outline" data-act="close-modal">Cancel</button><button class="btn btn-critical" data-act="confirm-delete" data-id="${map.id}">Delete mapping</button>`);
   }
@@ -549,7 +549,7 @@ function render() {
   const view = { setup: viewSetup, mappings: viewMappings, 'create/details': viewDetails, 'create/connecting': viewConnecting,
     'create/fields': viewFields, 'create/tested': viewTested, 'test-mapping': viewTestMapping, 'test-mapping/result': viewTestMappingResult, tests: viewTests }[r];
   $app.innerHTML = view() + modalHtml();
-  document.title = { setup: 'Setup', mappings: 'EDI Mappings', tests: 'Transformation Runs' }[r] || (r.startsWith('test-mapping') ? 'Test Mapping' : S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
+  document.title = { setup: 'Setup', mappings: 'EDI Mappings', tests: 'EDI Transformation Runs' }[r] || (r.startsWith('test-mapping') ? 'Test Mapping' : S.wizard.mode === 'edit' ? 'Edit Mapping' : 'Create Mapping');
   document.title += ' · Coupa';
 
   if (focusId) {
@@ -733,7 +733,7 @@ document.addEventListener('click', e => {
     case 'tp-back': S.testPage.result = null; save(); go('test-mapping'); return;
     case 'download-csv': downloadCsv(id); return;
 
-    // Transformation Runs
+    // EDI Transformation Runs
     case 'new-test': U.modal = { type: 'new-test', policyId: S.mappings[0]?.id, file: null }; break;
     case 'test-sample-file': U.modal.file = sampleFile(); break;
     case 'test-remove-file': U.modal.file = null; break;
@@ -782,7 +782,7 @@ const PROTO = [
   ['Create Mapping', [['details', 'Details and Upload — empty'], ['details-filled', 'Details and Upload — filled'], ['connecting', 'Mapping — parsing the EDI file'],
     ['fields', 'Field Mappings'], ['errors', 'Tested Mappings — errors found'], ['success', 'Tested Mappings — succeeded']]],
   ['Test Mapping action', [['tp', 'A5 · Test Mapping — upload'], ['tp-filled', 'A5 · Test Mapping — file attached'], ['tp-success', 'A5 · Tested Mappings — succeeded']]],
-  ['Transformation Runs', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
+  ['EDI Transformation Runs', [['tests-zero', 'B2 · Test runs — zero state'], ['tests', 'B2 · Test runs — status (sample data)']]],
   ['Helpers', [['attach', 'Attach sample EDI file (acme_po_4471_855.edi)']]],
 ];
 function protoGo(key) {
