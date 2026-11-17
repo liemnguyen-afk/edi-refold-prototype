@@ -438,7 +438,7 @@ function viewTests() {
   if (!S.tests.length) {
     return shell('EDI Transformation Runs', `<div class="content">
       ${toastHtml()}
-      <div><h1 class="page-title">EDI Transformation Runs</h1><p class="page-desc">Recent test runs. Output CSVs are kept for 30 days.</p></div>
+      <div><h1 class="page-title">EDI Transformation Runs</h1><p class="page-desc">Recent test runs.</p></div>
       <section class="card empty">
         ${I.fileAdd(48)}
         <h3>No test transformations yet</h3>
